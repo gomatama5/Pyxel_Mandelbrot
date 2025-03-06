@@ -18,3 +18,5 @@ pyxel run pyxel_mandelbrot.py
 - F2 : Save config into /mand folder
 - Drop file onto screen : Load config
 - F5 : Restart
+## Screenshots / スクリーンショット
+![play movie](https://github.com/gomatama5/Pyxel_Mandelbrot/blob/main/screenshots/pyxel-20250306-170516.gif)
