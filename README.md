@@ -1,6 +1,7 @@
 # Pyxel_Mandelbrot
 ## Overview / 概要
 Pyxelを使ってマンデルブロ集合を描画します。画面を操作して色々な図形を探せます。  
+
 ## How to Start / 起動方法
 ```
 pyxel run pyxel_mandelbrot.py
@@ -9,6 +10,7 @@ pyxel run pyxel_mandelbrot.py
 - Pyxel
 - Numpy
 - Numba
+
 ## How to Use / 使い方
 - Left mouse drag : Expand the selected area
 - Right mouse drag : Move the position
@@ -18,8 +20,13 @@ pyxel run pyxel_mandelbrot.py
 - F2 : Save config into /mand folder
 - Drop file onto screen : Load config
 - F5 : Reset
+
 ## Screenshots / スクリーンショット
 ![play movie](https://github.com/gomatama5/Pyxel_Mandelbrot/blob/main/screenshots/pyxel-20250306-170516.gif)
+
+/screenshotsフォルダにサンプルのスクリーンショットも入れてあります。  
+/mandフォルダのファイルを画面にドロップするとサンプルのスクリーンショットと取った場所に行けます。
+
 ## Development History / 開発経緯
 Pyxelでカラーパレット拡張を試したくて、何か描いてみようと思ってマンデルブロ集合を試してみました。
 最初は試しに表示するだけのつもりでしたが、サクサク動いて楽しくなったので、ちゃんと機能を実装してしまいました。  
@@ -29,6 +36,7 @@ Pyxelでカラーパレット拡張を試したくて、何か描いてみよう
 - Numbaを使ってマンデルブロ集合の計算を高速化する
 
 以下で紹介するテストコードは/testフォルダ以下に入っています。
+
 ### TurboカラーマップをPyxelのパレットを拡張して設定する
 見た目がいい感じのTurboカラーマップは[作者様がPythonの定義ファイルを公開されている](https://gist.github.com/mikhailov-work/ee72ba4191942acecc03fe6da94fc73f)
 のでそれを使わせていただきました。  
