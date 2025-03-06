@@ -102,7 +102,7 @@ def image_from_data(image_data):
         ptr[offset : offset + width] = image_row
     return image
 ```
-書き込む位置の指定が不要になったので、少しスッキリしました。
+書き込む位置の指定が不要になったので、コードが少しスッキリしました。
 
 結論としては、**毎フレームデータ更新するかどうかに関わらず上記の方法でImageデータを作成してpyxel.bltすれば良さそうです**。
 
