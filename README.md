@@ -86,7 +86,7 @@ blt_image_obj  : 0.0010430000256747007
 ところが、data_ptrを使って配列データを**1行毎に**書き込むとかなり高速化されて、pyxel.psetの5倍くらい早くなりました。
 
 毎フレームデータを更新する場合、1行毎に書き込む方法が一番早そうですが、
-今回のマンデルブロ集合の描画の場合、毎フレームデータを作るわけではないので、あらかじめImageデータを作成しておいてpyxel.bltしたら早いのでは？
+今回のマンデルブロ集合の描画の場合、毎フレームデータを作るわけではないので、あらかじめImageデータを作成しておいてpyxel.bltしたら速いのでは？
 と考えて計測してみたのがblt_image_objですが、やはり**爆速でした**。
 これなら、毎フレームデータ更新する場合も一旦Imageデータを作成してからpyxel.bltしても1番目の方法と大して時間は変わらないでしょう。
 
@@ -107,6 +107,12 @@ def image_from_data(image_data):
 結論としては、**毎フレームデータ更新するかどうかに関わらず上記の方法でImageデータを作成してpyxel.bltすれば良さそうです**。
 
 ### Numbaを使ってマンデルブロ集合の計算を高速化する
+最初に作った初期設定でマンデルブロ集合を表示させるだけのコードがpyxel_mandelbrot_simple.pyです。  
+[[Web Pyxel] pyxel_mandelbrot_simple.py](https://kitao.github.io/pyxel/wasm/launcher/?run=gomatama5.Pyxel_Mandelbrot.test.pyxel_mandelbrot_simple&packages=numpy)  
+Pyxelの描画は速いのですが、マンデルブロ集合の計算にかなり時間がかかってしまいました。
+
+もうちょっと速くならんかな？ということでNumbaを試したら、簡単に爆速で動くようになりました。
+PyxelのWeb版でNumbaが使えないためPCでしか動作しないのは残念ですが、それでもサクサク動くようになってとても快適になりました。
 
 ## Libraries / 使用したライブラリ
 [Pyxel](https://github.com/kitao/pyxel)  
