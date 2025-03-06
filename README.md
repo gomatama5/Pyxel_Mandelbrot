@@ -46,3 +46,9 @@ pyxel.colors.from_list(pyxel.colors.to_list() + pal)
 ### マンデルブロ集合の数値データをPyxelのdata_ptr()を使って高速に描画する
 
 ### Numbaを使ってマンデルブロ集合の計算を高速化する
+
+## Libraries / 使用したライブラリ
+[Pyxel](https://github.com/kitao/pyxel)  
+[Numpy](https://numpy.org/ja/)   
+[Numba](https://numba.pydata.org/)   
+[Turbo Colormap](https://gist.github.com/mikhailov-work/ee72ba4191942acecc03fe6da94fc73f)  
