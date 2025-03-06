@@ -10,8 +10,8 @@ pyxel run pyxel_mandelbrot.py
 - Numpy
 - Numba
 ## How to Use / 使い方
-- Left-click + Drag : Expand the selected area
-- Right-click + Drag : Move the position
+- Left mouse drag : Expand the selected area
+- Right mouse drag : Move the position
 - Mouse wheel : Scaling
 - Up / Down arrow : Increase / Decrease Mandelbrot calculation number
 - F1 : Change the coloring method
