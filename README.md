@@ -12,6 +12,7 @@ pyxel run pyxel_mandelbrot.py
 - Numba
 
 ## How to Use / 使い方
+### Mouse + Keyboard
 - Left mouse drag : Expand the selected area
 - Right mouse drag : Move the position
 - Mouse wheel : Scaling
@@ -20,7 +21,7 @@ pyxel run pyxel_mandelbrot.py
 - F2 : Save config into /mand folder
 - Drop file onto screen : Load config
 - F5 : Reset
-
+### Pad
 - Pad RB / A + Analog stick : Move(Left stick) + Scaling(Right stick)
 - Pad Up / Down : Increase / Decrease Mandelbrot calculation number
 - Pad X : Change the coloring method
