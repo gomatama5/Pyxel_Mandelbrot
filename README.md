@@ -30,7 +30,10 @@ pyxel run pyxel_mandelbrot.py
 - Pad Back : Reset
 
 ## Screenshots / スクリーンショット
-![play movie](https://github.com/gomatama5/Pyxel_Mandelbrot/blob/main/screenshots/pyxel-20250306-170516.gif)
+### Mouse + Keyboard
+![play movie](https://github.com/gomatama5/Pyxel_Mandelbrot/blob/main/screenshots/pyxel-20250306-170516a.gif)
+### Pad
+![play movie](https://github.com/gomatama5/Pyxel_Mandelbrot/blob/main/screenshots/pyxel-20250309-022522a.gif)
 
 /screenshotsフォルダにサンプルのスクリーンショットも入れてあります。  
 /mandフォルダのファイルを画面にドロップするとサンプルのスクリーンショットと取った場所に行けます。
