@@ -4,6 +4,7 @@ import calc_mandelbrot as mand
 import numpy as np
 import os
 import re
+import glob
 
 # 画面サイズ
 SCREEN_WIDTH = 1280
@@ -14,6 +15,7 @@ MAND_ORIGIN = complex(0, 0)  # 表示の中心座標
 MAND_WIDTH = 4.4  # 表示幅
 MAND_NUM = 64  # 計算回数
 MODULO_COLOR = False
+GAMEPAD_AXIS_THRESHOLD = 2048
 
 
 # 色データの2次元配列からpyxel.Imageオブジェクトを作成
@@ -117,36 +119,56 @@ class App:
             self.width *= 2
             self.calc_mesh_data()
 
-        # 上下キーで計算回数を増減
-        if pyxel.btnp(pyxel.KEY_UP):
+        # Pad RB/Aを押しながらアナログスティックで3D移動
+        if pyxel.btnp(pyxel.GAMEPAD1_BUTTON_RIGHTSHOULDER) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+            self.move3d_x = 0.0
+            self.move3d_y = 0.0
+            self.move3d_scale = 1.0
+
+        if pyxel.btn(pyxel.GAMEPAD1_BUTTON_RIGHTSHOULDER) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_A):
+            if abs(pyxel.btnv(pyxel.GAMEPAD1_AXIS_LEFTX)) > GAMEPAD_AXIS_THRESHOLD:
+                self.move3d_x -= self.move3d_scale * pyxel.btnv(pyxel.GAMEPAD1_AXIS_LEFTX) * 16 / 32768
+            if abs(pyxel.btnv(pyxel.GAMEPAD1_AXIS_LEFTY)) > GAMEPAD_AXIS_THRESHOLD:
+                self.move3d_y -= self.move3d_scale * pyxel.btnv(pyxel.GAMEPAD1_AXIS_LEFTY) * 16 / 32768
+            if abs(pyxel.btnv(pyxel.GAMEPAD1_AXIS_RIGHTY)) > GAMEPAD_AXIS_THRESHOLD:
+                scale = 1 + abs(pyxel.btnv(pyxel.GAMEPAD1_AXIS_RIGHTY)) / 32768 / 10
+                if pyxel.btnv(pyxel.GAMEPAD1_AXIS_RIGHTY) > 0:
+                    self.move3d_scale *= scale
+                else:
+                    self.move3d_scale /= scale
+
+        if pyxel.btnr(pyxel.GAMEPAD1_BUTTON_RIGHTSHOULDER) or pyxel.btnr(pyxel.GAMEPAD1_BUTTON_A):
+            if not (self.move3d_x == 0 and self.move3d_y == 0 and self.move3d_scale == 1):
+                self.orig += -complex(self.move3d_x, self.move3d_y) * self.width / SCREEN_WIDTH
+                self.width *= self.move3d_scale
+                self.calc_mesh_data()
+
+        # 上下キー/ボタンで計算回数を増減
+        if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
             self.num *= 2
             self.calc_mesh_data()
-        if pyxel.btnp(pyxel.KEY_DOWN):
+        if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
             self.num //= 2
             self.calc_mesh_data()
 
-        # F1でカラーリング方式を変更
-        if pyxel.btnp(pyxel.KEY_F1):
+        # F1/Pad Xでカラーリング方式を変更
+        if pyxel.btnp(pyxel.KEY_F1) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X):
             self.modulo_color ^= True
             self.calc_image_data()
 
-        # F2で現在の情報を保存
-        if pyxel.btnp(pyxel.KEY_F2):
-            open("mand/X{0}_Y{1}_W{2}_N{3}_.mand".format(self.orig.real, self.orig.imag, self.width, self.num), "w")
+        # F2/Pad Startで現在の情報を保存
+        if pyxel.btnp(pyxel.KEY_F2) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_START):
+            fname = "mand/X{0}_Y{1}_W{2}_N{3}_.mand".format(self.orig.real, self.orig.imag, self.width, self.num)
+            print("save: " + fname)
+            open(fname, "w")
 
-        # 画面にファイルドロップで保存した情報を読み込み
-        if pyxel.dropped_files:
-            print("file={0}".format(pyxel.dropped_files[0]))
-            fname = os.path.basename(pyxel.dropped_files[0])
-            print("fname={0}".format(fname))
+        # 設定を読み込む
+        def loadConfig(fname):
             m = re.match(r".*X((?:\w|\.|-)+)_Y((?:\w|\.|-)+)_W((?:\w|\.|-)+)_N((?:\w|\.|-)+)_.mand", fname)
             if m:
                 try:
+                    print("load: " + fname)
                     sx, sy, sw, sn = m.group(1, 2, 3, 4)
-                    print(sx)
-                    print(sy)
-                    print(sw)
-                    print(sn)
                     offset = complex(float(sx), float(sy))
                     w = float(sw)
                     n = int(sn)
@@ -157,8 +179,28 @@ class App:
                 except:
                     pass
 
-        # F5で初期設定に戻す
-        if pyxel.btnp(pyxel.KEY_F5):
+        # 画面にファイルドロップしたファイルの設定を読み込む
+        if pyxel.dropped_files:
+            fname = os.path.basename(pyxel.dropped_files[0])
+            loadConfig(fname)
+
+        # Pad LBを押しながら左/右ボタンn回で、n番目に新しい/古いファイルの設定を読み込む
+        if pyxel.btnp(pyxel.GAMEPAD1_BUTTON_LEFTSHOULDER):
+            self.fileSelect = 0
+        if pyxel.btn(pyxel.GAMEPAD1_BUTTON_LEFTSHOULDER):
+            if pyxel.btnr(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+                self.fileSelect -= 1
+            if pyxel.btnr(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+                self.fileSelect += 1
+        if pyxel.btnr(pyxel.GAMEPAD1_BUTTON_LEFTSHOULDER):
+            if self.fileSelect != 0:
+                files = sorted(glob.glob("mand/*.mand"), key=os.path.getmtime)
+                if -len(files) <= self.fileSelect < len(files):
+                    fname = files[self.fileSelect]
+                    loadConfig(fname)
+
+        # F5/Pad Backで初期設定に戻す
+        if pyxel.btnp(pyxel.KEY_F5) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_BACK):
             self.orig = MAND_ORIGIN
             self.width = MAND_WIDTH
             self.num = MAND_NUM
@@ -175,6 +217,19 @@ class App:
                 offset_y = mouse_y - self.rmouse_y
                 pyxel.cls(0)
                 pyxel.blt(offset_x, offset_y, self.screen_image, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+            # Pad RB/A中は画像の位置やスケールをずらして描画
+            elif pyxel.btn(pyxel.GAMEPAD1_BUTTON_RIGHTSHOULDER) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_A):
+                pyxel.cls(0)
+                pyxel.blt(
+                    self.move3d_x / self.move3d_scale,
+                    self.move3d_y / self.move3d_scale,
+                    self.screen_image,
+                    0,
+                    0,
+                    SCREEN_WIDTH,
+                    SCREEN_HEIGHT,
+                    scale=1 / self.move3d_scale,
+                )
             else:
                 pyxel.blt(0, 0, self.screen_image, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
 
