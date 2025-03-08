@@ -20,6 +20,7 @@ pyxel run pyxel_mandelbrot.py
 - F2 : Save config into /mand folder
 - Drop file onto screen : Load config
 - F5 : Reset
+
 - Pad RB / A + Analog stick : Move(Left stick) + Scaling(Right stick)
 - Pad Up / Down : Increase / Decrease Mandelbrot calculation number
 - Pad X : Change the coloring method
